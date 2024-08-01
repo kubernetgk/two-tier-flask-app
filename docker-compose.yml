@@ -1,31 +1,35 @@
-version: '3'
+version: '3.9'
 services:
   
   backend:
     build:
       context: .
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
       MYSQL_HOST: mysql
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_DB: myDb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: devops
     depends_on:
       - mysql
+    networks:
+      - twotier
 
   mysql:
-    image: mysql:5.7
+    container_name: mysql
+    image: 'mysql:5.7'
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: myDb
+      MYSQL_DATABASE: devops
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:
       - ./message.sql:/docker-entrypoint-initdb.d/message.sql   # Mount sql script into container's /docker-entrypoint-initdb.d directory to get table automatically created
       - mysql-data:/var/lib/mysql  # Mount the volume for MySQL data storage
-
+    networks:
+      - twotier
 volumes:
   mysql-data:
